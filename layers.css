@@ -1,0 +1,4 @@
+@layer ADElements, local-styles;
+
+@import url("https://cdn.jsdelivr.net/gh/Collert/AD-Elements@latest/main.css") layer(ADElements);
+@import "/styles.css" layer(local-styles);

@@ -1,0 +1,312 @@
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none!important;
+    }
+}
+
+@property --card-before-color {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: rgba(255, 255, 255, 0.04);
+}
+@property --card-after-color {
+    syntax: '<color>';
+    inherits: false;
+    initial-value: rgba(255, 255, 255, 0.4);
+}
+
+:root {
+    --mouse-x: 100px;
+    --mouse-y: 100px;
+}
+
+html, body {
+    overflow: hidden;
+}
+
+body {
+    min-height: 100dvh;
+    position: fixed;
+    width: 100dvw;
+}
+
+.grid-center {
+    display: grid;
+    place-items: center;
+}
+
+#stars-underlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100vw;
+    height: 100vh;
+}
+
+.star {
+    position: absolute;
+    background-color: var(--primary-contrast);
+    height: 7px;
+    width: 7px;
+    border-radius: 50%;
+    animation: star 2500ms ease both;
+    z-index: -1;
+}
+
+.star.permanent {
+    height: 5px;
+    width: 5px;
+    animation: star-perm 2500ms ease both;
+}
+
+@keyframes star {
+    from, to {
+        opacity: 0;
+    } 50% {
+        opacity: 1;
+    }
+}
+
+@keyframes star-perm {
+    from {opacity: 0;} to {opacity: 1;}
+}
+
+.menu-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    max-width: 50vw;
+    justify-content: center;
+}
+
+.card {
+    cursor: pointer;
+    max-height: 30vh;
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    position: relative;
+    padding: 1px;
+}
+
+html.shake-error .card.target {
+    animation: shake-error 1s ease both;
+}
+
+.card:not(.rendered) {
+    opacity: 0;
+}
+
+.card::before,
+.card::after {
+    content: "";
+    border-radius: inherit;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    opacity: 0;
+    position: absolute;
+    transition: opacity 500ms, --card-after-color 300ms ease, --card-before-color 300ms ease;
+    pointer-events: none;
+}
+
+.card::before {
+    background: radial-gradient(
+        800px circle at var(--mouse-x) var(--mouse-y), 
+        var(--card-before-color),
+        transparent 40%
+    );
+    z-index: 3;
+}
+
+html.shake-error .card::before {
+    --card-before-color: rgb(250, 128, 114, 0.2);
+}
+
+.card::after {  
+    background: radial-gradient(
+        600px circle at var(--mouse-x) var(--mouse-y), 
+        var(--card-after-color),
+        transparent 40%
+    );
+    z-index: 1;
+}
+
+html.shake-error .card::after {
+    --card-after-color: rgb(250, 128, 114, 0.6);
+}
+
+.card:hover::before,
+.menu-items:hover > .card:after {
+    opacity: 1;
+}
+
+.card > .card-content {
+    height: calc(100% - 2px);
+    width: calc(100% - 2px);
+    border-radius: inherit;
+    background-color: #303030;
+    inset: 1px;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-rows: 5fr 1fr 2fr;
+    gap: .5rem;
+    /* padding: .5rem; */
+}
+
+.card > .card-content h2,
+.card > .card-content p {
+    margin: 0;
+}
+
+.card > .card-content h2 {
+    display: grid;
+    place-items: center start;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+}
+
+.card > .card-content > * {
+    padding: 0 1rem;
+    z-index: 5;
+}
+.card > .card-content > *:first-child {
+    padding: 0;
+}
+
+.card > .card-content > *:last-child {
+    padding-bottom: .5rem;
+}
+
+html.first-load .card.rendered:nth-child(1),
+html.first-load .card.rendered:nth-child(n+3) {
+    animation: appear-card-1 1000ms ease both;
+}
+html.first-load .card.rendered:nth-child(2),
+html.first-load .card.rendered:nth-child(2n+3) {
+    animation: appear-card-2 1000ms ease both;
+}
+html.first-load .card.rendered:nth-child(3n+3) {
+    animation: appear-card-3 1000ms ease both;
+}
+
+@keyframes appear-card-1 {
+    from {
+        transform: translateX(-50%);
+        opacity: 0;
+    } to {
+        transform: none;
+        opacity: 1;
+    }
+}
+@keyframes appear-card-2 {
+    from {
+        transform: translateY(50%);
+        opacity: 0;
+    } to {
+        transform: none;
+        opacity: 1;
+    }
+}
+@keyframes appear-card-3 {
+    from {
+        transform: translateX(50%);
+        opacity: 0;
+    } to {
+        transform: none;
+        opacity: 1;
+    }
+}
+
+.top {
+    position: relative;
+    overflow: hidden;
+    border-radius: inherit;
+}
+
+.top::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(0deg, rgba(48,48,48,1) 0%, rgba(255,255,255,0) 70%);
+    height: 70%;
+}
+
+.top img {
+    object-fit: cover;
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+}
+
+@keyframes shake-error {
+    from, to {
+        transform: none;
+    }
+    20%, 60% {
+        transform: translateX(2%);
+    }
+    40%, 80% {
+        transform: translateX(-2%);
+    }
+}
+
+@media (orientation:portrait) {
+    h2 {
+        font-size: medium;
+    }
+    p {
+        font-size: small;
+    }
+    .menu-items {
+        max-width: 90vw;
+    }
+    .card {
+        width: 40vw;
+    }
+    .card > .card-content > * {
+        padding: 0 0.75rem;
+    }
+
+    .card.rendered:nth-child(1),
+    .card.rendered:nth-child(n+3) {
+        animation: none;
+    }
+    .card.rendered:nth-child(2),
+    .card.rendered:nth-child(2n+3) {
+        animation: none;
+    }
+    .card.rendered:nth-child(3n+3) {
+        animation: none;
+    }
+    .card.rendered:nth-child(odd) {
+        animation: appear-card-1 1000ms ease both;
+    }
+    .card.rendered:nth-child(even) {
+        animation: appear-card-3 1000ms ease both;
+    }
+}
+
+@media (min-aspect-ratio: 1) {
+    .menu-items {
+        max-width: 80vw;
+    }
+}
+
+@media (min-aspect-ratio: 1.5/1) {
+    .menu-items {
+        max-width: 60vw;
+    }
+}
+
+@media (min-aspect-ratio: 2) {
+    .menu-items {
+        max-width: 50vw;
+    }
+}
